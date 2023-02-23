@@ -188,9 +188,11 @@ public class TicTacToe {
 
 
     public static void main(String[] args) {
-        //String[][] board = new String[scale][scale];
-        String[][] board = { {player1.check, player2.check, player1.check},
-                {player2.check, player2.check, player1.check}, {null, null, null}};
+        String[][] board = new String[scale][scale];
+        /*String[][] board = { {player1.check, player2.check, player1.check},
+                {player2.check, player2.check, player1.check}, {null, null, null}};*/
+        /*String[][] board = { {player2.check, null, player1.check}, {player1.check, null, null},
+                {player1.check, player2.check, player2.check}};*/
 
         int add = 0;
         for ( int i = 0; i < scale; i++ ) {
@@ -202,16 +204,14 @@ public class TicTacToe {
             add += 3;
         }
 
-        computer = player1; //will be removed if Bot algorithm has completed.
+        /*computer = player1; //will be removed if Bot algorithm has completed.
         TicTacToe dummy = new TicTacToe();
         int debug = dummy.Bot(player1, board, 1).index;
         System.out.println(debug); //has to print 9
         System.out.println(dummy.Bot(player1, board, 1).max); //has to print 9
-        printBoard(board);
+        printBoard(board);*/
 
 
-
-        /*
         System.out.println("Optimized movement: ");
 
         System.out.print("Enter player1 name(X): ");
@@ -227,6 +227,6 @@ public class TicTacToe {
             System.out.println("The Bot has replaced player2!" + "\n");
         }
 
-        game(board, player1);*/
+        game(board, player1);
     }
 }
