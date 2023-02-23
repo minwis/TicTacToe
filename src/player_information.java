@@ -12,5 +12,4 @@ public class player_information {
         this.check = check;
     }
 
-
 }

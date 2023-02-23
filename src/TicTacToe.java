@@ -1,11 +1,13 @@
 import java.util.*;
 
-public class TicTactoe {
+public class TicTacToe {
 
     public static int scale = 3; //scale * scale
 
     public static player_information player1 = new player_information(1, "MS", "X");
     public static player_information player2 = new player_information(2, "", "O");
+
+    public static player_information computer = null;
 
 
     public static boolean Is_Winner(String[][] board, player_information player) {
@@ -145,17 +147,21 @@ public class TicTactoe {
             yourturn = player2;
         }
 
-        int mymax = -1;
+        int mymax = 0;
         int myindex = 0;
         for ( int i = 0; i < scale; i++ ) {
             for (int j = 0; j < scale; j++ ) {
 
-                if (!Objects.equals(board[i][j], player1.check) && !Objects.equals(board[i][j], player2.check)) {
+                if ( '1' <= board[i][j].charAt(0) && board[i][j].charAt(0) <= '9' ) {
                     board[i][j] = player.check;
                     String s = String.valueOf(i * 3 + (j % 3) + 1);
                     if ( Is_Winner(board, player)) {
                         board[i][j] = s;
-                        break;
+                        int a = -1;
+                        if ( Objects.equals(player, computer) ) {
+                            a = 1;
+                        }
+                        return new returnV(a, i * 3 + (j % 3) + 1);
                     }
 
                     if ( depth == 9 ) {
@@ -165,9 +171,11 @@ public class TicTactoe {
                     returnV your = Bot (yourturn, board, depth+1);
                     board[i][j] = s;
 
-                    if ( mymax < -your.max ) { //your max가 -면 최적화된 움직임이다.
-                        mymax = -your.max;
-                        myindex = i * 3 + (j % 3) + 1;
+                    if (Objects.equals(player, computer) && mymax < your.max) {
+                        mymax = your.max;
+                    }
+                    else if ( !Objects.equals(player, computer) && mymax > your.max ) {
+                        mymax = your.max;
                     }
                 }
 
@@ -194,18 +202,17 @@ public class TicTactoe {
             add += 3;
         }
 
-
-        System.out.println("Hello World");
-
-        TicTactoe dummy = new TicTactoe();
-        int debug = dummy.Bot(player1, board, 1).max; // it prints 7.
+        computer = player1; //will be removed if Bot algorithm has completed.
+        TicTacToe dummy = new TicTacToe();
+        int debug = dummy.Bot(player1, board, 1).index;
         System.out.println(debug); //has to print 9
+        System.out.println(dummy.Bot(player1, board, 1).max); //has to print 9
+        printBoard(board);
 
 
 
         /*
         System.out.println("Optimized movement: ");
-        printBoard(board);
 
         System.out.print("Enter player1 name(X): ");
         player1.player_name = sc.nextLine();
@@ -216,6 +223,7 @@ public class TicTactoe {
         System.out.println();
         if ( player2.player_name.equals("") ) {
             player2.player_name = "Bot";
+            computer = player2;
             System.out.println("The Bot has replaced player2!" + "\n");
         }
 
