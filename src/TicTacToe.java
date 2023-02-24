@@ -88,8 +88,9 @@ public class TicTacToe {
         }
         if ( Objects.equals(player, computer) ) {
             TicTacToe dummy = new TicTacToe();
-            int i = dummy.Bot(computer, board, depth).index - 1; //the index may not be saved properly
-            board[ i / 3 ][ i % 3 ] = player.check; //throws ArrayIndexOutOfBounds error(-1)
+            int i = dummy.Bot(computer, board, depth).index - 1;
+            board[ i / 3 ][ i % 3 ] = player.check;
+            System.out.println();
         }
         else {
             System.out.println(player.player_name + "'s turn!");
@@ -149,32 +150,29 @@ public class TicTacToe {
             yourturn = player2;
         }
 
-        int mymax = 0; //-1 or 0 or 1, who wins/computer
-        int myindex = 0; //if you set the your mark, O or X
-        for ( int i = 0; i < scale; i++ ) {  //scale = 3
+        int mymax = -1;
+        int myindex = 0;
+        for ( int i = 0; i < scale; i++ ) {
             for (int j = 0; j < scale; j++ ) {
 
                 if ( '1' <= board[i][j].charAt(0) && board[i][j].charAt(0) <= '9' ) {
                     board[i][j] = player.check;
                     String s = String.valueOf(i * 3 + (j % 3) + 1);
                     if ( Is_Winner(board, player)) {
-                        int a = -1;
                         if ( Objects.equals(player, computer) ) {
-                            a = 1;
+                            mymax = 1;
                         }
                         board[i][j] = s;
-                        return new returnV(a, i * 3 + (j % 3) + 1);
+                        return new returnV(mymax, i * 3 + (j % 3) + 1);
                     }
 
-                    if ( depth == 8 ) {
+                    if ( depth == scale*scale - 1 ) {
                         return new returnV(0, i * 3 + (j % 3) + 1);
                     }
 
                     returnV your = Bot (yourturn, board, depth+1);
                     board[i][j] = s;
 
-
-                    //player == computer
                     if (player.turn_number == computer.turn_number && mymax <= your.max) {
                         mymax = your.max;
                         myindex = your.index;
