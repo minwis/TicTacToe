@@ -138,6 +138,20 @@ public class TicTacToe {
         }
     }
 
+    public static boolean Drawn(String[][] board ) {
+        int c = 0;
+        int max = scale * scale;
+        for ( int i = 0; i < scale; i++ ) {
+            for ( int j = 0; j < scale; j++ ) {
+                if ( '1' <= board[i][j].charAt(0) && board[i][j].charAt(0) <= '9' ) {
+                }
+                else {
+                    c++;
+                }
+            }
+        }
+        return c == max;
+    }
 
     public returnV Bot(player_information player, String[][] board, int depth) { //draw
 
@@ -157,31 +171,35 @@ public class TicTacToe {
 
                 if ( '1' <= board[i][j].charAt(0) && board[i][j].charAt(0) <= '9' ) {
                     board[i][j] = player.check;
-                    String s = String.valueOf(i * 3 + (j % 3) + 1);
-                    if ( Is_Winner(board, player)) {
-                        if ( Objects.equals(player, computer) ) {
-                            mymax = 1;
-                        }
+                    String s = String.valueOf(i * 3 + j + 1);
+
+                    if ( Is_Winner(board, player) ) { //이길 경우, 질 경우 둘 다 계산.
+                        mymax = 1;
+                        myindex = i * 3 + j + 1;
                         board[i][j] = s;
-                        return new returnV(mymax, i * 3 + (j % 3) + 1);
+                        return new returnV(mymax, myindex);
+                    }
+                    else if ( Is_Winner(board, yourturn) ) {
+                        myindex = i * 3 + j + 1;
+                        board[i][j] = s;
+                        return new returnV(mymax, myindex);
                     }
 
-                    if ( depth == scale*scale - 1 ) {
-                        return new returnV(0, i * 3 + (j % 3) + 1);
+                    if ( depth == scale * scale - 1 ) {
+                        mymax = 0;
+                        myindex = i * 3 + j + 1;
+                        board[i][j] = s;
+                        return new returnV(mymax, myindex);
                     }
 
                     returnV your = Bot (yourturn, board, depth+1);
+
+                    if ( mymax < -your.max ) {
+                        mymax = -your.max;
+                        myindex = your.index;
+                    }
+
                     board[i][j] = s;
-
-                    if (player.turn_number == computer.turn_number && mymax <= your.max) {
-                        mymax = your.max;
-                        myindex = your.index;
-                    }
-                    else if ( player.turn_number != computer.turn_number && mymax >= your.max ) {
-                        mymax = your.max;
-                        myindex = your.index;
-                    }
-
                 }
 
             }
