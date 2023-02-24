@@ -86,8 +86,10 @@ public class TicTacToe {
         if ( Return ) {
             return;
         }
-        if ( player.turn_number == 2 && player2.player_name.equals("Bot") ) {
-
+        if ( Objects.equals(player, computer) ) {
+            TicTacToe dummy = new TicTacToe();
+            int i = dummy.Bot(computer, board, depth).index - 1; //the index may not be saved properly
+            board[ i / 3 ][ i % 3 ] = player.check; //throws ArrayIndexOutOfBounds error(-1)
         }
         else {
             System.out.println(player.player_name + "'s turn!");
@@ -136,7 +138,7 @@ public class TicTacToe {
     }
 
 
-    public returnV Bot(player_information player, String[][] board, int depth) {
+    public returnV Bot(player_information player, String[][] board, int depth) { //draw
 
         player_information yourturn = null;
 
@@ -147,36 +149,41 @@ public class TicTacToe {
             yourturn = player2;
         }
 
-        int mymax = 0;
-        int myindex = 0;
-        for ( int i = 0; i < scale; i++ ) {
+        int mymax = 0; //-1 or 0 or 1, who wins/computer
+        int myindex = 0; //if you set the your mark, O or X
+        for ( int i = 0; i < scale; i++ ) {  //scale = 3
             for (int j = 0; j < scale; j++ ) {
 
                 if ( '1' <= board[i][j].charAt(0) && board[i][j].charAt(0) <= '9' ) {
                     board[i][j] = player.check;
                     String s = String.valueOf(i * 3 + (j % 3) + 1);
                     if ( Is_Winner(board, player)) {
-                        board[i][j] = s;
                         int a = -1;
                         if ( Objects.equals(player, computer) ) {
                             a = 1;
                         }
+                        board[i][j] = s;
                         return new returnV(a, i * 3 + (j % 3) + 1);
                     }
 
-                    if ( depth == 9 ) {
+                    if ( depth == 8 ) {
                         return new returnV(0, i * 3 + (j % 3) + 1);
                     }
 
                     returnV your = Bot (yourturn, board, depth+1);
                     board[i][j] = s;
 
-                    if (Objects.equals(player, computer) && mymax < your.max) {
+
+                    //player == computer
+                    if (player.turn_number == computer.turn_number && mymax <= your.max) {
                         mymax = your.max;
+                        myindex = your.index;
                     }
-                    else if ( !Objects.equals(player, computer) && mymax > your.max ) {
+                    else if ( player.turn_number != computer.turn_number && mymax >= your.max ) {
                         mymax = your.max;
+                        myindex = your.index;
                     }
+
                 }
 
             }
@@ -210,9 +217,6 @@ public class TicTacToe {
         System.out.println(debug); //has to print 9
         System.out.println(dummy.Bot(player1, board, 1).max); //has to print 9
         printBoard(board);*/
-
-
-        System.out.println("Optimized movement: ");
 
         System.out.print("Enter player1 name(X): ");
         player1.player_name = sc.nextLine();
