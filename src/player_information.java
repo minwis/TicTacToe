@@ -6,7 +6,7 @@ public class player_information {
     String check;
     boolean Is_Bot = false;
 
-    player_information ( int turn_number, String player_name, String check ) {
+    player_information ( String player_name, String check ) {
         this.player_name = player_name;
         if ( this.player_name.equals("") ) {
             this.player_name = "Bot";

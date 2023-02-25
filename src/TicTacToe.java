@@ -2,9 +2,9 @@ import java.util.*;
 
 public class TicTacToe {
 
-    public static int scale = 3; //scale * scale
+    public static int scale = 3; //board is scale * scale
 
-    public static int playerN = 3;
+    public static int playerN = 2;
     public static player_information[] players = new player_information[playerN];
 
     public class returnV {
@@ -36,7 +36,7 @@ public class TicTacToe {
 
                 if ( '1' <= board[i][j].charAt(0) && board[i][j].charAt(0) <= '9' ) {
                     board[i][j] = player.check;
-                    String s = String.valueOf(i * 3 + j + 1);
+                    String s = String.valueOf(i * scale + j + 1);
 
                     if ( Is_Winner(board, player) || depth == scale * scale - 1 ) {
                         if ( Is_Winner(board, player) ) {
@@ -45,7 +45,7 @@ public class TicTacToe {
                         else {
                             mymax = 0;
                         }
-                        myindex = i * 3 + j + 1;
+                        myindex = i * scale + j + 1;
                         board[i][j] = s;
                         return new returnV(mymax, myindex);
                     }
@@ -54,7 +54,7 @@ public class TicTacToe {
 
                     if ( mymax < -your.max ) {
                         mymax = -your.max;
-                        myindex = i * 3 + j + 1;
+                        myindex = i * scale + j + 1;
                     }
 
                     board[i][j] = s;
@@ -141,20 +141,20 @@ public class TicTacToe {
         if ( player.Is_Bot ) {
             TicTacToe dummy = new TicTacToe();
             int i = dummy.Bot(player, board, depth, index).index - 1;
-            board[ i / 3 ][ i % 3 ] = player.check;
+            board[ i / scale ][ i % scale ] = player.check;
             System.out.println();
         }
         else {
             System.out.println(player.player_name + "'s turn!");
             int s = sc.nextInt();
             System.out.println();
-            if (  '1' > board[ (s - 1) / 3 ][ (s - 1) % 3 ].charAt(0) ||
-                    '9' < board[ (s - 1) / 3 ][ (s - 1) % 3 ].charAt(0) ) {
+            if (  '1' > board[ (s - 1) / scale ][ (s - 1) % scale ].charAt(0) ||
+                    '9' < board[ (s - 1) / scale ][ (s - 1) % scale ].charAt(0) ) {
                 System.out.println("The place is already occupied!" + "\n");
                 game(board, index);
             }
             else {
-                board[(s - 1) / 3][(s - 1) % 3] = player.check;
+                board[(s - 1) / scale][(s - 1) % scale] = player.check;
             }
         }
 
@@ -183,7 +183,7 @@ public class TicTacToe {
             for ( int j = 0; j < scale; j++ ) {
                 board[i][j] = String.valueOf( j + add + 1);
             }
-            add += 3;
+            add += scale;
         }
 
         for ( int i = 0; i < playerN; i++ ) {
@@ -191,7 +191,7 @@ public class TicTacToe {
             String name = sc.nextLine();
             char c = (char) ('A' + i);
             String mark = String.valueOf(c);
-            players[i] = new player_information(i + 1, name, mark);
+            players[i] = new player_information(name, mark);
         }
         game(board, 0);
 
