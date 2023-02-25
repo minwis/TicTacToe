@@ -16,21 +16,6 @@ public class TicTacToe {
         }
     }
 
-    public static boolean Drawn(String[][] board ) {
-        int c = 0;
-        int max = scale * scale;
-        for ( int i = 0; i < scale; i++ ) {
-            for ( int j = 0; j < scale; j++ ) {
-                if ( '1' <= board[i][j].charAt(0) && board[i][j].charAt(0) <= '9' ) {
-                }
-                else {
-                    c++;
-                }
-            }
-        }
-        return c == max;
-    }
-
     public returnV Bot(player_information player, String[][] board, int depth) { //draw
 
         player_information yourturn = null;
@@ -51,15 +36,13 @@ public class TicTacToe {
                     board[i][j] = player.check;
                     String s = String.valueOf(i * 3 + j + 1);
 
-                    if ( Is_Winner(board, player) ) {
-                        mymax = 1;
-                        myindex = i * 3 + j + 1;
-                        board[i][j] = s;
-                        return new returnV(mymax, myindex);
-                    }
-
-                    if ( depth == scale * scale - 1 ) {
-                        mymax = 0;
+                    if ( Is_Winner(board, player) || depth == scale * scale - 1 ) {
+                        if ( Is_Winner(board, player) ) {
+                            mymax = 1;
+                        }
+                        else {
+                            mymax = 0;
+                        }
                         myindex = i * 3 + j + 1;
                         board[i][j] = s;
                         return new returnV(mymax, myindex);
@@ -99,7 +82,6 @@ public class TicTacToe {
             c = 0;
         }
 
-        //vertical
         for ( int i = 0; i < scale; i++ ) {
             for ( int j = 0; j < scale; j++ ) {
                 if ( board[j][i].equals( player.check ) ) {
@@ -112,7 +94,6 @@ public class TicTacToe {
             c = 0;
         }
 
-        c = 0;
         for ( int i = 0; i < scale; i++ ) {
             if ( board[i][i].equals( player.check) ) {
                 c++;
@@ -128,11 +109,7 @@ public class TicTacToe {
                 c++;
             }
         }
-        if ( c == scale ) {
-            return true;
-        }
-
-        return false;
+        return c == scale;
     }
 
 
@@ -145,10 +122,9 @@ public class TicTacToe {
         }
     }
 
-    public static int depth = 0; //how far the game is going.
+    public static int depth = 0;
 
     public static Scanner sc = new Scanner(System.in);
-    public static boolean Return = false;
 
     public static void game(String[][] board, player_information player) {
 
@@ -159,9 +135,6 @@ public class TicTacToe {
         }
 
         printBoard(board);
-        if ( Return ) {
-            return;
-        }
         if ( player.Is_Bot ) {
             TicTacToe dummy = new TicTacToe();
             int i = dummy.Bot(player, board, depth).index - 1;
@@ -212,9 +185,7 @@ public class TicTacToe {
         int add = 0;
         for ( int i = 0; i < scale; i++ ) {
             for ( int j = 0; j < scale; j++ ) {
-                if ( board[i][j] == null) { //won't remove for the other debugging circumstances.
-                    board[i][j] = String.valueOf( j + add + 1);
-                }
+                board[i][j] = String.valueOf( j + add + 1);
             }
             add += 3;
         }
@@ -222,12 +193,10 @@ public class TicTacToe {
         System.out.print("Enter player1 name(X): ");
         String name1 = sc.nextLine();
         player1 = new player_information(1, name1, "X");
-        System.out.println();
 
         System.out.print("Enter player2 name(O): ");
         String name2 = sc.nextLine();
         player2 = new player_information(2, name2, "O");
-        System.out.println();
 
         game(board, player1);
 

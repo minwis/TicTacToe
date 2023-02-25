@@ -2,9 +2,9 @@ import java.util.*;
 
 public class player_information {
 
-    int turn_number = 0;
-    String player_name = "";
-    String check = "";
+    int turn_number;
+    String player_name;
+    String check;
     boolean Is_Bot = false;
 
     player_information ( int turn_number, String player_name, String check ) {
@@ -16,6 +16,7 @@ public class player_information {
             System.out.println( "\n" + "The player has replaced to Bot!");
         }
         this.check = check;
+        System.out.println();
     }
 
 }
