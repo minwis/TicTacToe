@@ -4,8 +4,8 @@ public class TicTacToe {
 
     public static int scale = 3; //scale * scale
 
-    public static player_information player1;
-    public static player_information player2;
+    public static int playerN = 3;
+    public static player_information[] players = new player_information[playerN];
 
     public class returnV {
         int max;
@@ -16,15 +16,17 @@ public class TicTacToe {
         }
     }
 
-    public returnV Bot(player_information player, String[][] board, int depth) { //draw
+    public returnV Bot(player_information player, String[][] board, int depth, int index) {
 
-        player_information yourturn = null;
+        player_information yourturn;
+        int nextindex = index + 1;
 
-        if ( Objects.equals(player, player2) ) {
-            yourturn = player1;
+        if ( index == playerN - 1 ) {
+            yourturn = players[0];
+            nextindex = 0;
         }
-        else if ( Objects.equals(player, player1) ) {
-            yourturn = player2;
+        else {
+            yourturn = players[index + 1];
         }
 
         int mymax = -1;
@@ -48,7 +50,7 @@ public class TicTacToe {
                         return new returnV(mymax, myindex);
                     }
 
-                    returnV your = Bot (yourturn, board, depth+1);
+                    returnV your = Bot (yourturn, board, depth+1, nextindex);
 
                     if ( mymax < -your.max ) {
                         mymax = -your.max;
@@ -126,8 +128,9 @@ public class TicTacToe {
 
     public static Scanner sc = new Scanner(System.in);
 
-    public static void game(String[][] board, player_information player) {
+    public static void game(String[][] board, int index) {
 
+        player_information player = players[index];
         if ( depth == scale * scale ) {
             printBoard(board);
             System.out.println("Drawn!");
@@ -137,7 +140,7 @@ public class TicTacToe {
         printBoard(board);
         if ( player.Is_Bot ) {
             TicTacToe dummy = new TicTacToe();
-            int i = dummy.Bot(player, board, depth).index - 1;
+            int i = dummy.Bot(player, board, depth, index).index - 1;
             board[ i / 3 ][ i % 3 ] = player.check;
             System.out.println();
         }
@@ -145,12 +148,10 @@ public class TicTacToe {
             System.out.println(player.player_name + "'s turn!");
             int s = sc.nextInt();
             System.out.println();
-            String check1 = player1.check;
-            String check2 = player2.check;
-            if ( board[ (s - 1) / 3 ][ (s - 1) % 3 ].equals(check1) ||
-                    board[ (s - 1) / 3 ][ (s - 1) % 3 ].equals(check2) ) {
+            if (  '1' > board[ (s - 1) / 3 ][ (s - 1) % 3 ].charAt(0) ||
+                    '9' < board[ (s - 1) / 3 ][ (s - 1) % 3 ].charAt(0) ) {
                 System.out.println("The place is already occupied!" + "\n");
-                game(board, player);
+                game(board, index);
             }
             else {
                 board[(s - 1) / 3][(s - 1) % 3] = player.check;
@@ -159,21 +160,16 @@ public class TicTacToe {
 
         if ( Is_Winner(board, player) ) {
             printBoard(board);
-            if ( player.turn_number == 1 ) {
-                System.out.println(player1.player_name + " won!");
-            }
-            else if ( player.turn_number == 2 ) {
-                System.out.println(player2.player_name + " won!");
-            }
+            System.out.println( players[index].player_name + "won!" );
             return;
         }
 
         depth++;
-        if ( player.turn_number == 1 ) {
-            game(board, player2);
+        if ( index == playerN - 1 ) {
+            game(board, 0);
         }
-        else if ( player.turn_number == 2 ) {
-            game(board, player1);
+        else {
+            game(board, index + 1);
         }
 
     }
@@ -190,15 +186,14 @@ public class TicTacToe {
             add += 3;
         }
 
-        System.out.print("Enter player1 name(X): ");
-        String name1 = sc.nextLine();
-        player1 = new player_information(1, name1, "X");
-
-        System.out.print("Enter player2 name(O): ");
-        String name2 = sc.nextLine();
-        player2 = new player_information(2, name2, "O");
-
-        game(board, player1);
+        for ( int i = 0; i < playerN; i++ ) {
+            System.out.print("Enter player" + (i + 1) + " name(X): ");
+            String name = sc.nextLine();
+            char c = (char) ('A' + i);
+            String mark = String.valueOf(c);
+            players[i] = new player_information(i + 1, name, mark);
+        }
+        game(board, 0);
 
     }
 }
