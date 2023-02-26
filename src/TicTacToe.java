@@ -16,17 +16,13 @@ public class TicTacToe {
         }
     }
 
-    public returnV Bot(player_information player, String[][] board, int depth, int index) {
+    public returnV Bot(String[][] board, int depth, int index) {
 
-        player_information yourturn;
+        player_information player = players[index];
         int nextindex = index + 1;
 
         if ( index == playerN - 1 ) {
-            yourturn = players[0];
             nextindex = 0;
-        }
-        else {
-            yourturn = players[index + 1];
         }
 
         int mymax = -1;
@@ -50,7 +46,7 @@ public class TicTacToe {
                         return new returnV(mymax, myindex);
                     }
 
-                    returnV your = Bot (yourturn, board, depth+1, nextindex);
+                    returnV your = Bot (board, depth+1, nextindex);
 
                     if ( mymax < -your.max ) {
                         mymax = -your.max;
@@ -140,7 +136,7 @@ public class TicTacToe {
         printBoard(board);
         if ( player.Is_Bot ) {
             TicTacToe dummy = new TicTacToe();
-            int i = dummy.Bot(player, board, depth, index).index - 1;
+            int i = dummy.Bot(board, depth, index).index - 1;
             board[ i / scale ][ i % scale ] = player.check;
             System.out.println();
         }
@@ -187,7 +183,7 @@ public class TicTacToe {
         }
 
         for ( int i = 0; i < playerN; i++ ) {
-            System.out.print("Enter player" + (i + 1) + " name(X): ");
+            System.out.print("Enter player" + (i + 1) + " name: ");
             String name = sc.nextLine();
             char c = (char) ('A' + i);
             String mark = String.valueOf(c);
